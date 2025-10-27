@@ -40,7 +40,7 @@ catalogs:
       specifier: ^9.36.0
       version: 9.38.0
     ioredis:
-      specifier: ^5.8.1
+      specifier: 5.8.2
       version: 5.8.2
     knex:
       specifier: ^3.1.0
@@ -113,6 +113,9 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.38.0(jiti@1.21.7)
+      ioredis:
+        specifier: 'catalog:'
+        version: 5.8.2
       open:
         specifier: 'catalog:'
         version: 10.2.0

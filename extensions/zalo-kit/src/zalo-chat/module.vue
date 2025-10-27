@@ -3,10 +3,22 @@ import { useApi } from '@directus/extensions-sdk'
 import { authentication, createDirectus, readItems, readMe, realtime, rest } from '@directus/sdk'
 import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useFileUpload } from './composables/useFileUpload'
+import { convertEmoticonToEmoji, handleEmojiInsert } from './utils/emoticonConverter'
 import { client } from './utils/sdk'
 
 const currentFunction = ref<string | null>(null)
+const messageInputRef = ref<HTMLTextAreaElement | null>(null)
 
+function insertEmoji(event: any) {
+  const emoji = event?.emoji || event?.data || event?.native || event
+
+  if (!emoji || typeof emoji !== 'string') {
+    console.warn('Invalid emoji:', emoji)
+    return
+  }
+
+  handleEmojiInsert(emoji, messageInputRef, messageText)
+}
 function showFunctionA() {
   currentFunction.value = 'A'
 }
@@ -2447,8 +2459,24 @@ const filteredMembers = computed(() => {
                 @input="onSelectFromLibrary"
               />
             </Story>
-            <VEmojiPicker @emoji-selected="logEvent('emoji-selected', $event)">
-              My Button
+            <VEmojiPicker
+              @select="insertEmoji($event)"
+              @emoji-click="insertEmoji($event)"
+              @emoji-selected="insertEmoji($event)"
+              @input="insertEmoji($event)"
+              @change="insertEmoji($event)"
+            >
+              <template #button>
+                <button
+                  class="w-8 h-8 flex items-center justify-center rounded-md bg-transparent hover:bg-neutral-100 text-text-muted hover:text-text-secondary transition-colors"
+                  type="button"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 5.39763 14.6024 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333Z" stroke="currentColor" stroke-width="1.5" />
+                    <path d="M6.66667 11.6667C6.66667 11.6667 7.91667 13.3333 10 13.3333C12.0833 13.3333 13.3333 11.6667 13.3333 11.6667M7.5 7.5H7.50833M12.5 7.5H12.5083" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </button>
+              </template>
             </VEmojiPicker>
             <button
               class="w-8 h-8 flex items-center justify-center rounded-md bg-transparent hover:bg-neutral-100 text-text-muted hover:text-text-secondary transition-colors"
@@ -2473,6 +2501,7 @@ const filteredMembers = computed(() => {
 
           <div class="flex-1 flex items-end gap-2">
             <textarea
+              ref="messageInputRef"
               v-model="messageText"
               placeholder="Type your message here..."
               rows="1"

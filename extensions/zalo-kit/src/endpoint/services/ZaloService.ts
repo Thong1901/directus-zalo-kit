@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 import type { SchemaOverview } from '@directus/types'
-// import Redis from 'ioredis'
+import Redis from 'ioredis'
 import { match, P } from 'ts-pattern'
 import { LoginQRCallbackEventType, ThreadType, Zalo } from 'zca-js'
 
 // Temporary type for Redis to avoid import errors
-type Redis = any
+// type Redis = any
 
 interface ZaloSession {
   userId: string
